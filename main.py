@@ -1532,13 +1532,7 @@ def create_checkout_session():
             payment_method_types=['card'],
             mode='payment',
             line_items=[{
-                'price_data': {
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': 'Collapse Quiz – Full Collapse Report',
-                    },
-                    'unit_amount': 2000,
-                },
+                'price': 'price_1RqNKJID9zdZeqLiKArKtHWS',
                 'quantity': 1,
             }],
             metadata={
