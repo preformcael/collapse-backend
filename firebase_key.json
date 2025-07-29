@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "collapse-quiz",
+  "private_key_id": "98c5a10b4d2f72ef77ae119587ddc3fa352d0d16",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQClsXFPL33HHHjL\njk7pjbwoYpcba1fIrCwrltWbHcoyaWkIpibI/34uYDRVT1JIZ8bdhX4QEnpZMbO4\nZLEcmFDkFTJ0EOjTxDtTl5rdwj6/UDKOlvMgvVFys3x6+S/2pP0UZzNIZ5ReHSsH\ndCHFehFAhQeSFgsp5fHdHIscjVO3vFLxDOm7ac3Pm3Dhj0liBudbhjC0tMZO+/F9\n1HE4+a0Ed0k6izo3B92Emz9uBECs2Vpv3HSaCitY65yMDkUMBp5aphu9ZhoS8MK6\neGeMQCQqvRaqan/eIrDxZklXx3FxC9zI4o8hntTVaPElYtRybwNROJjlwIQJifrQ\nxGVmWcX1AgMBAAECggEAKkajfApIg9Caa4mETegJfZ5mIqtZSwzO+lIybzEDIaiu\nkXPfSoKR3eBTCf9CpdHAtk20tAIa8H4TdnVOkVa1sPRNmrqjxUB4yKPSckl4/BRI\nygPuxcg4K1Vrae8Bk2NWZWnNdmhjPT4g9/ZkFYBHPZiTrWztbUPL2dhKED9pAGRl\nrimQfLEembcxf1g88Nr5+46iUj6dOrxjmqJ4izSIwnorcjEwaR9gWPSShG+Ndcri\nGKGPyiWiqX/NiZkVcYX853zrfzN8/o8aVrUzSaodClW3HEuyvjydSfNF7QXys094\nYue3qrdipHtRHyt7bUG9Z/A3Fd95CAeAt0SEnLwJUwKBgQDfRrKGMe4WSbzE/o8m\n0Si30q5RVChvAcWmK6RriVYoltqaJ2tJe2eXaUiN44bTVupfPMV4p1dovf1pZ8+E\nEgxK7Uz7gWPn470/XlJsZicJAg48HuS8WndSAV9IxXksotSPHmPmKF8xlov/sJ6I\nd1rc+pI0bcEOpdgwN5ipk/l2kwKBgQC9+jwoXIRqes/PZ4w2uiywNC3gVASs1Mbt\nQCrAwmow4CzTQtm4nkvLt2nhYDQkOCDJAbixgHOIyUvVOeYUbXmI44Sqr2mtsbD+\nD9g1S/+iqFibk4o/tQHDQMMBo34jePY0LWfkvlIuB4bqsnaHsTzg6BT7MNKQhJ//\nc2AcGaXeVwKBgCV3Inu8IxxgUSmpIXI9BJ0b4B5LheFipbzFc/iLegajkZjuZmVV\nLMPOadtNQ5Fw8zD57JTbV6J+xugKAFtEAAYOna1SP+ZoY5gfhqsj1QcA7kyOTomA\nkKcVDd0TLcsco5hEXDUBrz+N6H4GMAPsKzYLYb8kb5G6qHUmzxodd227AoGAbRBT\nqPg0LM0EsJVJscGAFkhebgLODEq7SUklQjRasmSAV2hxhcOa0AEkD/ci+AghCkSq\nu3x613R4zJjItcGDnErBxxudF9KDQdfmz/IpeEAdXnN9UsWflXCAg1hQ+hxfe+T1\nWCTLGRHJKsP5uDzQLm4OXYbR25XIJOcfrgIrb1ECgYEAzj9eUTMadTfzliyYliqZ\ndYYYdAjOTFLxKCt1JdbJSNCNlOOmYy6YL+9A19p0OATdFXGHFRTBIxfqh8ncj99I\n09AQ0qu6+GjjQrv6IHsZJD9SeZ5L5PQCy0E+nzxu85mLJ8lDUrFVPI/KFBu2fhma\nE1N7aZDUKGRSMEvM0X8fKR8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "preform-backend@collapse-quiz.iam.gserviceaccount.com",
+  "client_id": "100474715793981077900",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/preform-backend%40collapse-quiz.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+} 

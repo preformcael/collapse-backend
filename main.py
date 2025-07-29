@@ -10,6 +10,16 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os, json, random, uuid
 import stripe
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Initialize Firebase
+cred = credentials.Certificate("firebase_key.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+
 
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
@@ -786,8 +796,6 @@ def analyze():
             return jsonify({"error": "Please provide at least 50 characters of input."}), 400
         
         user_id = str(uuid.uuid4())
-        save_path = f"saved_loops/{user_id}_loop.json"
-        os.makedirs("saved_loops", exist_ok=True)
         
         # Create analysis prompt for initial collapse detection
         analysis_prompt = f"""You are PreformGPT, analyzing collapse patterns. Analyze this input and return JSON with:
@@ -862,16 +870,10 @@ User input: {input_text}
         collapse_data["drizzle"] = []
         collapse_data["loop_lock"] = ""  # Will be populated after payment
 
-        with open(save_path, "w", encoding="utf-8") as f:
-            json.dump(collapse_data, f, indent=2, ensure_ascii=False)
+        # Save to Firebase Firestore
+        db.collection("collapse_loops").document(user_id).set(collapse_data)
 
-        print(f"💾 Data saved to {save_path}")
-        
-        # Verify the file was written correctly
-        if os.path.exists(save_path):
-            print(f"✅ File exists and is {os.path.getsize(save_path)} bytes")
-        else:
-            print(f"❌ File was not created at {save_path}")
+        print(f"💾 Data saved to Firebase for user {user_id}")
 
         return jsonify({"user_id": user_id, "data": collapse_data, "cached": False})
 
@@ -892,12 +894,12 @@ def lock():
         if not user_id:
             return jsonify({"error": "User ID required"}), 400
         
-        save_path = f"saved_loops/{user_id}_loop.json"
-        if not os.path.exists(save_path):
+        # Get document from Firebase Firestore
+        doc = db.collection("collapse_loops").document(user_id).get()
+        if not doc.exists:
             return jsonify({"error": "Analysis not found"}), 404
         
-        with open(save_path, "r", encoding="utf-8") as f:
-            collapse_data = json.load(f)
+        collapse_data = doc.to_dict()
         
         # Check if data is already locked (prevent regeneration)
         if collapse_data.get("locked", False):
@@ -1084,10 +1086,8 @@ Rules:
             collapse_data["locked"] = True
             collapse_data["loop_ready"] = True
 
-            with open(save_path, "w", encoding="utf-8") as f:
-                json.dump(collapse_data, f, indent=2, ensure_ascii=False)
-                f.flush()
-                os.fsync(f.fileno())
+            # Save updated data to Firebase Firestore
+            db.collection("collapse_loops").document(user_id).set(collapse_data)
 
             print(f"✅ Successfully updated user {user_id} with fallback content")
             return jsonify({"user_id": user_id, "data": collapse_data, "cached": False})
@@ -1290,44 +1290,10 @@ Rules:
         collapse_data["locked"] = True  # Mark as locked to prevent regeneration
         collapse_data["loop_ready"] = True  # Add ready flag for frontend polling
 
-        # CRITICAL: Ensure file is written to disk before returning
-        with open(save_path, "w", encoding="utf-8") as f:
-            json.dump(collapse_data, f, indent=2, ensure_ascii=False)
-            f.flush()  # Force flush to disk
-            os.fsync(f.fileno())  # Ensure data is written to disk
-
-        # Verify file was written correctly
-        if os.path.exists(save_path):
-            file_size = os.path.getsize(save_path)
-            print(f"✅ File written successfully: {save_path} ({file_size} bytes)")
-            
-            # Double-check JSON integrity
-            try:
-                with open(save_path, "r", encoding="utf-8") as f:
-                    verification_data = json.load(f)
-                if verification_data.get("loop_ready") and len(verification_data.get("drizzle", [])) >= 6:
-                    print(f"✅ JSON integrity verified for user {user_id}")
-                else:
-                    print(f"⚠️ JSON integrity check failed for user {user_id}")
-                    return jsonify({
-                        "error": "Data integrity check failed",
-                        "details": "Generated data is incomplete",
-                        "user_id": user_id
-                    }), 500
-            except Exception as e:
-                print(f"❌ JSON verification failed for user {user_id}: {str(e)}")
-                return jsonify({
-                    "error": "Data verification failed",
-                    "details": str(e),
-                    "user_id": user_id
-                }), 500
-        else:
-            print(f"❌ File was not created at {save_path}")
-            return jsonify({
-                "error": "Failed to save data",
-                "details": "File was not created",
-                "user_id": user_id
-            }), 500
+        # Save updated data to Firebase Firestore
+        db.collection("collapse_loops").document(user_id).set(collapse_data)
+        
+        print(f"✅ Data saved to Firebase for user {user_id}")
 
         print(f"✅ Successfully updated user {user_id} with personalized content")
         return jsonify({"user_id": user_id, "data": collapse_data, "cached": False})
@@ -1371,17 +1337,15 @@ def submit():
     if len(raw_input.split()) < 250:
         return jsonify({"error": "Input too short", "user_id": user_id}), 400
 
-    save_path = f"saved_loops/{user_id}_loop.json"
-    os.makedirs("saved_loops", exist_ok=True)
-
-    if os.path.exists(save_path) and not remap:
-        with open(save_path, "r", encoding="utf-8") as f:
-            cached = json.load(f)
+    # Check if data exists in Firebase
+    doc = db.collection("collapse_loops").document(user_id).get()
+    if doc.exists and not remap:
+        cached = doc.to_dict()
         cached = normalize_types(cached)
         cached = ensure_all_required_fields(cached)
         cached["collapse_reading"] = load_collapse_reading(cached["collapse_type"])
-        with open(save_path, "w", encoding="utf-8") as f:
-            json.dump(cached, f, indent=2, ensure_ascii=False)
+        # Update the cached data in Firebase
+        db.collection("collapse_loops").document(user_id).set(cached)
         return jsonify({"user_id": user_id, "data": cached, "cached": True})
 
     user_input = f"""Name: {name}
@@ -1433,29 +1397,26 @@ Input: {raw_input}"""
     collapse_data["user_input"] = raw_input  # Store user input for later personalization
     collapse_data = ensure_all_required_fields(collapse_data)
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        json.dump(collapse_data, f, indent=2, ensure_ascii=False)
+    # Save to Firebase Firestore
+    db.collection("collapse_loops").document(user_id).set(collapse_data)
 
     return jsonify({"user_id": user_id, "data": collapse_data, "cached": False})
 
 @app.route("/result/<user_id>", methods=["GET"])
 def get_result(user_id):
     """Get user result data with comprehensive error handling and data validation"""
-    path = f"saved_loops/{user_id}_loop.json"
     
-    print(f"🔍 DEBUG: Looking for user data at: {path}")
+    print(f"🔍 DEBUG: Looking for user data in Firebase for: {user_id}")
     
-    # Check if file exists
-    if not os.path.exists(path):
-        print(f"❌ DEBUG: File not found: {path}")
-        return jsonify({"error": "User ID not found", "user_id": user_id}), 404
-
-    print(f"✅ DEBUG: File found, size: {os.path.getsize(path)} bytes")
-
     try:
-        # Load JSON with error handling
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        # Get document from Firebase Firestore
+        doc = db.collection("collapse_loops").document(user_id).get()
+        if not doc.exists:
+            print(f"❌ DEBUG: Document not found in Firebase for user: {user_id}")
+            return jsonify({"error": "User ID not found", "user_id": user_id}), 404
+
+        data = doc.to_dict()
+        print(f"✅ DEBUG: Document found in Firebase for user {user_id}")
         
         print(f"✅ DEBUG: JSON loaded successfully for user {user_id}")
         print(f"📊 DEBUG: Data keys: {list(data.keys())}")
@@ -1531,12 +1492,12 @@ def feedback():
     if not user_id or not feedback_text:
         return jsonify({"error": "Missing user_id or feedback_text"}), 400
 
-    loop_path = f"saved_loops/{user_id}_loop.json"
-    if not os.path.exists(loop_path):
+    # Get document from Firebase Firestore
+    doc = db.collection("collapse_loops").document(user_id).get()
+    if not doc.exists:
         return jsonify({"error": "Loop not found"}), 404
 
-    with open(loop_path, "r", encoding="utf-8") as f:
-        loop_data = json.load(f)
+    loop_data = doc.to_dict()
 
     loop_info = json.dumps(loop_data, indent=2)
     prompt = feedback_prompt_template.replace("{LOOP}", loop_info).replace("{FEEDBACK}", feedback_text)
@@ -1610,16 +1571,13 @@ def stripe_webhook():
         user_id = session.get("metadata", {}).get("user_id")
         print(f"✅ Payment confirmed for user: {user_id}")
 
-        loop_path = f"saved_loops/{user_id}_loop.json"
-        if os.path.exists(loop_path):
-            try:
-                with open(loop_path, "r", encoding="utf-8") as f:
-                    loop_data = json.load(f)
-                loop_data["paid"] = True
-                with open(loop_path, "w", encoding="utf-8") as f:
-                    json.dump(loop_data, f, indent=2, ensure_ascii=False)
-            except Exception as e:
-                print(f"❌ Failed to update paid status for user {user_id}: {e}")
+        # Update paid status in Firebase
+        try:
+            doc_ref = db.collection("collapse_loops").document(user_id)
+            doc_ref.update({"paid": True})
+            print(f"✅ Updated paid status for user {user_id} in Firebase")
+        except Exception as e:
+            print(f"❌ Failed to update paid status for user {user_id}: {e}")
 
     return "", 200
 
@@ -1637,11 +1595,11 @@ def test_analyze():
 @app.route("/paywall/<user_id>", methods=["GET"])
 def check_paywall(user_id):
     try:
-        loop_path = f"saved_loops/{user_id}_loop.json"
-        if not os.path.exists(loop_path):
+        # Get document from Firebase Firestore
+        doc = db.collection("collapse_loops").document(user_id).get()
+        if not doc.exists:
             return jsonify({"user_id": user_id, "unlocked": False})
-        with open(loop_path, "r", encoding="utf-8") as f:
-            loop = json.load(f)
+        loop = doc.to_dict()
         unlocked = loop.get("paid", False)
         return jsonify({"user_id": user_id, "unlocked": unlocked})
     except:
@@ -1651,16 +1609,16 @@ def check_paywall(user_id):
 def check_data_status(user_id):
     """Check if user data is ready for display (especially after Stripe redirect)"""
     try:
-        loop_path = f"saved_loops/{user_id}_loop.json"
-        if not os.path.exists(loop_path):
+        # Get document from Firebase Firestore
+        doc = db.collection("collapse_loops").document(user_id).get()
+        if not doc.exists:
             return jsonify({
                 "user_id": user_id, 
                 "status": "not_found",
                 "message": "User data not found"
             }), 404
         
-        with open(loop_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        data = doc.to_dict()
         
         is_paid = data.get("paid", False)
         loop_ready = data.get("loop_ready", False)
