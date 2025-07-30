@@ -1603,6 +1603,24 @@ def health_check():
 def test_analyze():
     return jsonify({"message": "Analyze endpoint is accessible"})
 
+@app.route("/check-env", methods=["GET"])
+def check_env():
+    """Check environment variables for debugging"""
+    try:
+        stripe_key = os.getenv("STRIPE_SECRET_KEY")
+        domain = os.getenv("DOMAIN")
+        
+        return jsonify({
+            "stripe_key_exists": bool(stripe_key),
+            "stripe_key_prefix": stripe_key[:10] + "..." if stripe_key else "None",
+            "stripe_key_length": len(stripe_key) if stripe_key else 0,
+            "domain": domain,
+            "stripe_api_key_set": bool(stripe.api_key),
+            "stripe_api_key_prefix": stripe.api_key[:10] + "..." if stripe.api_key else "None"
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route("/paywall/<user_id>", methods=["GET"])
