@@ -1630,6 +1630,36 @@ def test_checkout():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/test-price", methods=["GET"])
+def test_price():
+    """Test endpoint to validate the Stripe price ID"""
+    try:
+        price_id = 'price_1RqNKJID9zdZeqLiKArKtHWS'
+        
+        # Try to retrieve the price from Stripe
+        try:
+            price = stripe.Price.retrieve(price_id)
+            return jsonify({
+                "price_exists": True,
+                "price_id": price_id,
+                "price_data": {
+                    "id": price.id,
+                    "active": price.active,
+                    "currency": price.currency,
+                    "unit_amount": price.unit_amount,
+                    "product": price.product
+                }
+            })
+        except stripe.error.InvalidRequestError as e:
+            return jsonify({
+                "price_exists": False,
+                "price_id": price_id,
+                "error": str(e)
+            }), 400
+            
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route("/paywall/<user_id>", methods=["GET"])
