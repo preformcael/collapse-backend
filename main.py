@@ -1540,7 +1540,7 @@ def create_checkout_session():
             payment_method_types=['card'],
             mode='payment',
             line_items=[{
-                'price': 'price_1RqNKJID9zdZeqLiKArKtHWS',
+                'price': 'price_1RqNotID9zdZeqLi6ygb0ywO',
                 'quantity': 1,
             }],
             metadata={
@@ -1634,7 +1634,7 @@ def test_checkout():
 def test_price():
     """Test endpoint to validate the Stripe price ID"""
     try:
-        price_id = 'price_1RqNKJID9zdZeqLiKArKtHWS'
+        price_id = 'price_1RqNotID9zdZeqLi6ygb0ywO'
         
         # Try to retrieve the price from Stripe
         try:
