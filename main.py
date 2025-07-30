@@ -1528,6 +1528,14 @@ def create_checkout_session():
         if not user_id:
             return jsonify({"error": "Missing user_id"}), 400
 
+        # Debug environment variables
+        print(f"🔍 Debug Stripe checkout - DOMAIN: {DOMAIN}")
+        print(f"🔍 Debug Stripe checkout - STRIPE_SECRET_KEY exists: {bool(os.getenv('STRIPE_SECRET_KEY'))}")
+        print(f"🔍 Debug Stripe checkout - user_id: {user_id}")
+
+        # Use a fallback domain if DOMAIN is not set
+        domain = DOMAIN if DOMAIN else "https://collapsequiz.com"
+        
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             mode='payment',
@@ -1538,13 +1546,15 @@ def create_checkout_session():
             metadata={
                 'user_id': user_id
             },
-            success_url=f"{DOMAIN}/result?user_id={user_id}&success=true",
-            cancel_url=f"{DOMAIN}/result?cancel=true",
+            success_url=f"{domain}/result?user_id={user_id}&success=true",
+            cancel_url=f"{domain}/result?user_id={user_id}&cancel=true",
         )
 
+        print(f"✅ Stripe checkout session created successfully: {checkout_session.url}")
         return jsonify({'url': checkout_session.url})
 
     except Exception as e:
+        print(f"❌ Stripe checkout error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/webhook", methods=["POST"])
