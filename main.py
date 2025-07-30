@@ -38,6 +38,7 @@ DOMAIN = os.getenv("DOMAIN")
 # Debug Stripe configuration
 print(f"🔄 Deployment timestamp: {__import__('datetime').datetime.now()}")
 print(f"🔍 Loaded key prefix: {STRIPE_SECRET_KEY[:8]}")
+print(f"🔍 New key verification: {STRIPE_SECRET_KEY[:10]}...{STRIPE_SECRET_KEY[-4:]}")
 print(f"🔍 Stripe API Key loaded: {stripe.api_key[:20]}..." if stripe.api_key else "❌ No Stripe API Key found")
 print(f"🔍 DOMAIN loaded: {DOMAIN}")
 
