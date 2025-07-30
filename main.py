@@ -33,6 +33,15 @@ DOMAIN = os.getenv("DOMAIN")
 print(f"🔍 Stripe API Key loaded: {stripe.api_key[:20]}..." if stripe.api_key else "❌ No Stripe API Key found")
 print(f"🔍 DOMAIN loaded: {DOMAIN}")
 
+# Sanity check - DO NOT log full key
+stripe_key = os.getenv("STRIPE_SECRET_KEY")
+if stripe_key:
+    print(f"🔍 Sanity check - Stripe key loaded: {stripe_key[:10]}...")
+    print(f"🔍 Sanity check - Key length: {len(stripe_key)}")
+    print(f"🔍 Sanity check - Key starts with: {stripe_key[:7]}")
+else:
+    print("❌ Sanity check - No Stripe key found in environment")
+
 # with open("preformgpt_final_guardrail_prompt.txt", "r", encoding="utf-8") as f:
 #     collapse_prompt = f.read()
 
