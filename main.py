@@ -24,7 +24,9 @@ db = firestore.client()
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
-load_dotenv()
+# Only load .env file in development, not in production
+if os.path.exists('.env'):
+    load_dotenv()
 client = OpenAI()
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 DOMAIN = os.getenv("DOMAIN")
