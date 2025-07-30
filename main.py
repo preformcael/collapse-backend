@@ -7,7 +7,6 @@ with open("i_am_here.txt", "w") as f:
 from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS
 from openai import OpenAI
-from dotenv import load_dotenv
 import os, json, random, uuid
 import stripe
 import firebase_admin
@@ -24,27 +23,31 @@ db = firestore.client()
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
-# Only load .env file in development, not in production
-# Force fresh environment variable loading
-if os.path.exists('.env'):
-    load_dotenv()
+# Load environment variables directly from system environment
+# No .env file dependency for production
 client = OpenAI()
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+
+# Load Stripe key with proper error handling
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+if not STRIPE_SECRET_KEY:
+    raise Exception("Missing STRIPE_SECRET_KEY environment variable")
+
+stripe.api_key = STRIPE_SECRET_KEY
 DOMAIN = os.getenv("DOMAIN")
 
 # Debug Stripe configuration
+print(f"🔄 Deployment timestamp: {__import__('datetime').datetime.now()}")
+print(f"🔍 Loaded key prefix: {STRIPE_SECRET_KEY[:8]}")
 print(f"🔍 Stripe API Key loaded: {stripe.api_key[:20]}..." if stripe.api_key else "❌ No Stripe API Key found")
 print(f"🔍 DOMAIN loaded: {DOMAIN}")
 
 # Sanity check - DO NOT log full key
-print(f"🔄 Deployment timestamp: {__import__('datetime').datetime.now()}")
-stripe_key = os.getenv("STRIPE_SECRET_KEY")
-if stripe_key:
-    print(f"🔍 Sanity check - Stripe key loaded: {stripe_key[:10]}...")
-    print(f"🔍 Sanity check - Key length: {len(stripe_key)}")
-    print(f"🔍 Sanity check - Key starts with: {stripe_key[:7]}")
-    print(f"🔍 Sanity check - Key ends with: {stripe_key[-4:]}")
-    print(f"🔍 Sanity check - Full key (masked): {stripe_key[:10]}...{stripe_key[-4:]}")
+if STRIPE_SECRET_KEY:
+    print(f"🔍 Sanity check - Stripe key loaded: {STRIPE_SECRET_KEY[:10]}...")
+    print(f"🔍 Sanity check - Key length: {len(STRIPE_SECRET_KEY)}")
+    print(f"🔍 Sanity check - Key starts with: {STRIPE_SECRET_KEY[:7]}")
+    print(f"🔍 Sanity check - Key ends with: {STRIPE_SECRET_KEY[-4:]}")
+    print(f"🔍 Sanity check - Full key (masked): {STRIPE_SECRET_KEY[:10]}...{STRIPE_SECRET_KEY[-4:]}")
 else:
     print("❌ Sanity check - No Stripe key found in environment")
 
