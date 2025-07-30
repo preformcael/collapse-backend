@@ -1613,6 +1613,23 @@ def test_stripe():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/test-checkout", methods=["POST"])
+def test_checkout():
+    """Test endpoint that returns a mock Stripe URL without calling Stripe API"""
+    try:
+        data = request.get_json()
+        user_id = data.get("user_id")
+        
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+            
+        # Return a mock Stripe URL for testing
+        mock_url = f"https://checkout.stripe.com/pay/cs_test_mock_url#fid={user_id}"
+        
+        return jsonify({'url': mock_url})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route("/paywall/<user_id>", methods=["GET"])
