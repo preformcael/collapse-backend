@@ -1553,9 +1553,12 @@ def create_checkout_session():
         print(f"✅ Stripe checkout session created successfully: {checkout_session.url}")
         return jsonify({'url': checkout_session.url})
 
+    except stripe.error.StripeError as e:
+        print(f"❌ Stripe API error: {str(e)}")
+        return jsonify({"error": f"Stripe error: {str(e)}"}), 500
     except Exception as e:
-        print(f"❌ Stripe checkout error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        print(f"❌ General error in Stripe checkout: {str(e)}")
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
 
 @app.route("/webhook", methods=["POST"])
 def stripe_webhook():
@@ -1593,6 +1596,22 @@ def health_check():
 @app.route("/test-analyze", methods=["GET"])
 def test_analyze():
     return jsonify({"message": "Analyze endpoint is accessible"})
+
+@app.route("/test-stripe", methods=["GET"])
+def test_stripe():
+    """Test endpoint to check Stripe configuration"""
+    try:
+        stripe_key_exists = bool(os.getenv("STRIPE_SECRET_KEY"))
+        domain_exists = bool(DOMAIN)
+        
+        return jsonify({
+            "stripe_key_exists": stripe_key_exists,
+            "domain_exists": domain_exists,
+            "domain_value": DOMAIN,
+            "stripe_key_length": len(os.getenv("STRIPE_SECRET_KEY", ""))
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 
