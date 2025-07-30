@@ -41,6 +41,8 @@ if stripe_key:
     print(f"🔍 Sanity check - Stripe key loaded: {stripe_key[:10]}...")
     print(f"🔍 Sanity check - Key length: {len(stripe_key)}")
     print(f"🔍 Sanity check - Key starts with: {stripe_key[:7]}")
+    print(f"🔍 Sanity check - Key ends with: {stripe_key[-4:]}")
+    print(f"🔍 Sanity check - Full key (masked): {stripe_key[:10]}...{stripe_key[-4:]}")
 else:
     print("❌ Sanity check - No Stripe key found in environment")
 
