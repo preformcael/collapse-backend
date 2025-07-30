@@ -29,6 +29,10 @@ client = OpenAI()
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 DOMAIN = os.getenv("DOMAIN")
 
+# Debug Stripe configuration
+print(f"🔍 Stripe API Key loaded: {stripe.api_key[:20]}..." if stripe.api_key else "❌ No Stripe API Key found")
+print(f"🔍 DOMAIN loaded: {DOMAIN}")
+
 # with open("preformgpt_final_guardrail_prompt.txt", "r", encoding="utf-8") as f:
 #     collapse_prompt = f.read()
 
@@ -1531,7 +1535,9 @@ def create_checkout_session():
         # Debug environment variables
         print(f"🔍 Debug Stripe checkout - DOMAIN: {DOMAIN}")
         print(f"🔍 Debug Stripe checkout - STRIPE_SECRET_KEY exists: {bool(os.getenv('STRIPE_SECRET_KEY'))}")
+        print(f"🔍 Debug Stripe checkout - STRIPE_SECRET_KEY value: {os.getenv('STRIPE_SECRET_KEY')[:20] if os.getenv('STRIPE_SECRET_KEY') else 'None'}...")
         print(f"🔍 Debug Stripe checkout - user_id: {user_id}")
+        print(f"🔍 Debug Stripe checkout - stripe.api_key: {stripe.api_key[:20] if stripe.api_key else 'None'}...")
 
         # Use a fallback domain if DOMAIN is not set
         domain = DOMAIN if DOMAIN else "https://collapsequiz.com"
@@ -1596,69 +1602,6 @@ def health_check():
 @app.route("/test-analyze", methods=["GET"])
 def test_analyze():
     return jsonify({"message": "Analyze endpoint is accessible"})
-
-@app.route("/test-stripe", methods=["GET"])
-def test_stripe():
-    """Test endpoint to check Stripe configuration"""
-    try:
-        stripe_key_exists = bool(os.getenv("STRIPE_SECRET_KEY"))
-        domain_exists = bool(DOMAIN)
-        
-        return jsonify({
-            "stripe_key_exists": stripe_key_exists,
-            "domain_exists": domain_exists,
-            "domain_value": DOMAIN,
-            "stripe_key_length": len(os.getenv("STRIPE_SECRET_KEY", ""))
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/test-checkout", methods=["POST"])
-def test_checkout():
-    """Test endpoint that returns a mock Stripe URL without calling Stripe API"""
-    try:
-        data = request.get_json()
-        user_id = data.get("user_id")
-        
-        if not user_id:
-            return jsonify({"error": "Missing user_id"}), 400
-            
-        # Return a mock Stripe URL for testing
-        mock_url = f"https://checkout.stripe.com/pay/cs_test_mock_url#fid={user_id}"
-        
-        return jsonify({'url': mock_url})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route("/test-price", methods=["GET"])
-def test_price():
-    """Test endpoint to validate the Stripe price ID"""
-    try:
-        price_id = 'price_1RqNotID9zdZeqLi6ygb0ywO'
-        
-        # Try to retrieve the price from Stripe
-        try:
-            price = stripe.Price.retrieve(price_id)
-            return jsonify({
-                "price_exists": True,
-                "price_id": price_id,
-                "price_data": {
-                    "id": price.id,
-                    "active": price.active,
-                    "currency": price.currency,
-                    "unit_amount": price.unit_amount,
-                    "product": price.product
-                }
-            })
-        except stripe.error.InvalidRequestError as e:
-            return jsonify({
-                "price_exists": False,
-                "price_id": price_id,
-                "error": str(e)
-            }), 400
-            
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 
 
