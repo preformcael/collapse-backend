@@ -25,6 +25,7 @@ app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
 # Only load .env file in development, not in production
+# Force fresh environment variable loading
 if os.path.exists('.env'):
     load_dotenv()
 client = OpenAI()
@@ -36,6 +37,7 @@ print(f"🔍 Stripe API Key loaded: {stripe.api_key[:20]}..." if stripe.api_key 
 print(f"🔍 DOMAIN loaded: {DOMAIN}")
 
 # Sanity check - DO NOT log full key
+print(f"🔄 Deployment timestamp: {__import__('datetime').datetime.now()}")
 stripe_key = os.getenv("STRIPE_SECRET_KEY")
 if stripe_key:
     print(f"🔍 Sanity check - Stripe key loaded: {stripe_key[:10]}...")
