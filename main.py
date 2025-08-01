@@ -1568,7 +1568,7 @@ def create_checkout_session():
             payment_method_types=['card'],
             mode='payment',
             line_items=[{
-                'price': 'price_1RqddCID9zdZeqLiwzVlPjty',
+                'price': 'price_1Rr9GIID9zdZeqLiEhJOW1BH',
                 'quantity': 1,
             }],
             metadata={
