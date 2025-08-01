@@ -841,6 +841,9 @@ User input: {input_text}
 🔧 CRITICAL RULES:
 - ENFORCE EXACTLY 3 SENTENCES for each summary (trigger, oscillation, interference, collapse)
 - Each summary must include exact quote from user input in second sentence
+- These quotes should be naturally integrated into the prose — not just pasted
+- The tone should remain emotionally sharp, metaphorical, and reflective — never give advice or validation
+- PreformGPT must remain a mirror, not an assistant
 - All collapse types must be one of the 8 types listed
 - Loop mirror should feel like a mirror held up to them
 - No section titles in paragraph content"""
@@ -1565,7 +1568,7 @@ def create_checkout_session():
             payment_method_types=['card'],
             mode='payment',
             line_items=[{
-                'price': 'price_1RpbKZID9zdZeqLixjokmYaj',
+                'price': 'price_1RqddCID9zdZeqLiwzVlPjty',
                 'quantity': 1,
             }],
             metadata={
@@ -1724,3 +1727,6 @@ if __name__ == "__main__":
         print(f"❌ Server startup error: {e}")
         import traceback
         traceback.print_exc()
+#   B a c k e n d   d e p l o y m e n t   t r i g g e r   -   0 7 / 3 0 / 2 0 2 5   1 3 : 5 6 : 0 6 
+ 
+ 
