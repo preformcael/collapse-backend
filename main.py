@@ -18,8 +18,6 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-
-
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
@@ -51,9 +49,6 @@ if STRIPE_SECRET_KEY:
     print(f"🔍 Sanity check - Full key (masked): {STRIPE_SECRET_KEY[:10]}...{STRIPE_SECRET_KEY[-4:]}")
 else:
     print("❌ Sanity check - No Stripe key found in environment")
-
-# with open("preformgpt_final_guardrail_prompt.txt", "r", encoding="utf-8") as f:
-#     collapse_prompt = f.read()
 
 with open("preformgpt_feedback_prompt.txt", "r", encoding="utf-8") as f:
     feedback_prompt_template = f.read()
@@ -182,7 +177,7 @@ def load_collapse_sections(collapse_type):
             # Keep original name if no mapping found
             mapped_sections[section_name] = content
     
-    return mapped_sections
+    return mapped_sections 
 
 def generate_fallback_content(field, data):
     t = data.get("collapse_type", "unknown").capitalize()
@@ -313,258 +308,6 @@ def generate_rich_interpretation(quote, section, collapse_type):
                 "insight": "This quote captures the Thorn's drive to protect what's precious. Your desire for security reflects how you create boundaries around what matters most.",
                 "impact": "This defensive drive shapes how you approach relationships and challenges."
             }
-        },
-        "negative_habits": {
-            "pulse": {
-                "pattern": "flickering between commitments",
-                "insight": "This quote shows the Pulse's tendency to shift rapidly between different approaches. Your struggle with consistency reflects how you flicker between certainty and doubt.",
-                "impact": "This pattern creates instability in your habits and routines."
-            },
-            "spiral": {
-                "pattern": "getting lost in analysis",
-                "insight": "This quote reveals the Spiral's tendency to overthink and get stuck in recursive patterns. Your struggle with action reflects how you coil deeper into thought.",
-                "impact": "This pattern prevents you from moving forward with decisions."
-            },
-            "mirror": {
-                "pattern": "distorting self-perception",
-                "insight": "This quote shows the Mirror's tendency to see yourself through a cracked lens. Your struggle with self-acceptance reflects how you distort your own image.",
-                "impact": "This pattern creates barriers to authentic self-expression."
-            },
-            "echo": {
-                "pattern": "amplifying negative patterns",
-                "insight": "This quote reveals the Echo's tendency to repeat and amplify harmful behaviors. Your struggle with change reflects how you get stuck in resonant loops.",
-                "impact": "This pattern makes it difficult to break free from destructive cycles."
-            },
-            "fracture": {
-                "pattern": "sudden emotional breaks",
-                "insight": "This quote shows the Fracture's tendency to shatter under pressure. Your struggle with stability reflects how you break when faced with challenges.",
-                "impact": "This pattern creates unpredictable responses to stress."
-            },
-            "flood": {
-                "pattern": "overwhelming emotional responses",
-                "insight": "This quote reveals the Flood's tendency to get submerged by feelings. Your struggle with emotional regulation reflects how you drown in intense emotions.",
-                "impact": "This pattern makes it difficult to maintain emotional balance."
-            },
-            "veil": {
-                "pattern": "hiding from challenges",
-                "insight": "This quote shows the Veil's tendency to obscure difficult truths. Your struggle with confrontation reflects how you hide behind protective layers.",
-                "impact": "This pattern prevents authentic engagement with problems."
-            },
-            "thorn": {
-                "pattern": "defensive responses",
-                "insight": "This quote reveals the Thorn's tendency to protect yourself with sharp boundaries. Your struggle with vulnerability reflects how you keep others at bay.",
-                "impact": "This pattern creates barriers to intimacy and connection."
-            }
-        },
-        "emotional_baseline": {
-            "pulse": {
-                "pattern": "flickering between emotional states",
-                "insight": "This quote captures the Pulse's emotional landscape that shifts rapidly between certainty and doubt. Your feelings flicker like a bulb in a dark hallway, casting shadows that dance between extremes.",
-                "impact": "This creates a foundation of uncertainty that affects every relationship and decision."
-            },
-            "spiral": {
-                "pattern": "recursive emotional processing",
-                "insight": "This quote shows the Spiral's tendency to coil inward, creating deeper and deeper loops of thought. Your emotions get trapped in recursive patterns, unable to break free from the cycle.",
-                "impact": "This recursive processing becomes your emotional baseline, making it hard to move forward."
-            },
-            "mirror": {
-                "pattern": "reflective emotional distortion",
-                "insight": "This quote reveals the Mirror's tendency to see emotions through a cracked lens. You process feelings through the distortion of self-criticism and doubt.",
-                "impact": "This distortion becomes your emotional foundation, coloring every experience."
-            },
-            "echo": {
-                "pattern": "amplified emotional resonance",
-                "insight": "This quote shows the Echo's tendency to amplify emotions with each repetition. Your feelings echo back louder each time you try to silence them.",
-                "impact": "This amplification becomes your emotional baseline, overwhelming your capacity to process."
-            },
-            "fracture": {
-                "pattern": "sudden emotional breaks",
-                "insight": "This quote captures the Fracture's tendency to shatter unexpectedly. Your emotional stability breaks like bone that never healed properly.",
-                "impact": "These sudden breaks become your emotional baseline, making trust difficult."
-            },
-            "flood": {
-                "pattern": "overwhelming emotional tides",
-                "insight": "This quote shows the Flood's tendency to rise like waters that submerge everything. Your emotions overwhelm rational thought, drowning out clarity.",
-                "impact": "This overwhelm becomes your emotional baseline, making it hard to stay afloat."
-            },
-            "veil": {
-                "pattern": "hidden emotional depths",
-                "insight": "This quote reveals the Veil's tendency to draw curtains across true feelings. You obscure your emotional reality behind protective layers.",
-                "impact": "This hiding becomes your emotional baseline, preventing authentic connection."
-            },
-            "thorn": {
-                "pattern": "protective emotional armor",
-                "insight": "This quote shows the Thorn's tendency to grow emotional spikes for protection. You create sharp boundaries that also isolate you from warmth.",
-                "impact": "This defensive posture becomes your emotional baseline, keeping others at a safe distance."
-            }
-        },
-        "expanded_collapse_cycle": {
-            "pulse": {
-                "pattern": "cycles of uncertainty and doubt",
-                "insight": "Your collapse begins with a flicker of uncertainty that grows into a cycle of doubt. This quote captures the moment when you start questioning everything, unable to find stable ground.",
-                "impact": "This cycle traps you in a pattern of indecision and second-guessing."
-            },
-            "spiral": {
-                "pattern": "recursive thinking traps",
-                "insight": "Your collapse begins when you get caught in a thought loop that pulls you deeper and deeper. This quote shows how you spiral inward, unable to break free from your own mind.",
-                "impact": "This recursive pattern becomes a trap that prevents forward movement."
-            },
-            "mirror": {
-                "pattern": "self-reflection distortion",
-                "insight": "Your collapse begins when you see yourself through a cracked mirror, distorting your reality. This quote reveals how self-criticism becomes the lens through which you view everything.",
-                "impact": "This distortion cycle prevents you from seeing yourself clearly."
-            },
-            "echo": {
-                "pattern": "amplified repetition cycles",
-                "insight": "Your collapse begins when you start amplifying and repeating negative patterns. This quote shows how you get stuck in emotional loops that grow louder with each repetition.",
-                "impact": "This amplification cycle makes it impossible to move past painful experiences."
-            },
-            "fracture": {
-                "pattern": "sudden breaking cycles",
-                "insight": "Your collapse begins with a sudden break that shatters your stability. This quote captures the moment when your emotional foundation gives way unexpectedly.",
-                "impact": "These sudden breaks create a cycle of instability and distrust."
-            },
-            "flood": {
-                "pattern": "overwhelm cycles",
-                "insight": "Your collapse begins when you get overwhelmed by emotional tides that drown your clarity. This quote shows how you sink beneath the weight of your own feelings.",
-                "impact": "This overwhelm cycle makes it impossible to process or move forward."
-            },
-            "veil": {
-                "pattern": "hiding and obscuring cycles",
-                "insight": "Your collapse begins when you start hiding your true self behind protective layers. This quote reveals how you draw curtains across your reality to avoid vulnerability.",
-                "impact": "This hiding cycle prevents authentic connection and resolution."
-            },
-            "thorn": {
-                "pattern": "defensive barrier cycles",
-                "insight": "Your collapse begins when you grow protective spikes that keep others at bay. This quote shows how you create defensive barriers that also isolate you.",
-                "impact": "This defensive cycle prevents intimacy while maintaining protection."
-            }
-        },
-        "triggers_avoidances": {
-            "pulse": {
-                "pattern": "flickering between engagement and withdrawal",
-                "insight": "You're triggered by situations that force you to choose between certainty and doubt. This quote captures the moment when uncertainty becomes overwhelming, making you flicker between states.",
-                "impact": "This trigger pattern makes it difficult to commit to decisions or relationships."
-            },
-            "spiral": {
-                "pattern": "getting stuck in recursive thinking",
-                "insight": "You're triggered by situations that send you into deep thought loops. This quote shows how certain circumstances activate your recursive thinking patterns.",
-                "impact": "This trigger pattern traps you in intellectual analysis that prevents action."
-            },
-            "mirror": {
-                "pattern": "distorting self-perception",
-                "insight": "You're triggered by situations that force you to see yourself clearly. This quote reveals how certain circumstances activate your self-critical lens.",
-                "impact": "This trigger pattern makes it difficult to see yourself accurately."
-            },
-            "echo": {
-                "pattern": "amplifying emotional patterns",
-                "insight": "You're triggered by situations that activate your emotional amplification. This quote shows how certain circumstances make your feelings echo and grow louder.",
-                "impact": "This trigger pattern makes it difficult to process emotions without escalation."
-            },
-            "fracture": {
-                "pattern": "causing sudden emotional breaks",
-                "insight": "You're triggered by situations that put pressure on your emotional stability. This quote captures the moment when pressure causes your foundation to suddenly give way.",
-                "impact": "This trigger pattern makes it difficult to trust in your emotional stability."
-            },
-            "flood": {
-                "pattern": "overwhelming emotional capacity",
-                "insight": "You're triggered by situations that exceed your emotional capacity. This quote shows how certain circumstances cause you to sink beneath overwhelming feelings.",
-                "impact": "This trigger pattern makes it difficult to stay emotionally regulated."
-            },
-            "veil": {
-                "pattern": "making you hide and obscure",
-                "insight": "You're triggered by situations that make you want to disappear. This quote reveals how certain circumstances activate your protective hiding instincts.",
-                "impact": "This trigger pattern makes it difficult to show your true self."
-            },
-            "thorn": {
-                "pattern": "activating defensive responses",
-                "insight": "You're triggered by situations that make you feel threatened. This quote shows how certain circumstances activate your protective spikes and defensive barriers.",
-                "impact": "This trigger pattern makes it difficult to lower your guard and connect."
-            }
-        },
-        "social_impact": {
-            "pulse": {
-                "pattern": "creating uncertainty in relationships",
-                "insight": "Your uncertainty affects how others perceive and interact with you. This quote shows how your flickering between states creates confusion and instability in your relationships.",
-                "impact": "This pattern makes it difficult for others to know how to support you consistently."
-            },
-            "spiral": {
-                "pattern": "getting lost in your own thoughts",
-                "insight": "Your recursive thinking pulls you away from the people around you. This quote reveals how you disappear into your own mind, leaving others feeling disconnected.",
-                "impact": "This pattern makes it difficult to maintain presence in relationships."
-            },
-            "mirror": {
-                "pattern": "distorting how others see you",
-                "insight": "Your self-reflection affects how others perceive and understand you. This quote shows how your distorted self-perception influences your social interactions.",
-                "impact": "This pattern makes it difficult for others to see your true self clearly."
-            },
-            "echo": {
-                "pattern": "amplifying emotional resonance",
-                "insight": "Your emotional amplification affects the people around you. This quote reveals how your amplified feelings create intense but sometimes overwhelming connections.",
-                "impact": "This pattern creates deep but potentially unstable relationships."
-            },
-            "fracture": {
-                "pattern": "sudden breaks that confuse others",
-                "insight": "Your sudden emotional breaks affect how others trust and rely on you. This quote shows how your unexpected collapses create uncertainty in your relationships.",
-                "impact": "This pattern makes it difficult for others to predict or support you consistently."
-            },
-            "flood": {
-                "pattern": "overwhelming social connections",
-                "insight": "Your emotional overwhelm affects how others can connect with you. This quote reveals how your intense feelings can drown out the needs of others.",
-                "impact": "This pattern makes it difficult to maintain balanced relationships."
-            },
-            "veil": {
-                "pattern": "hiding from authentic connection",
-                "insight": "Your protective hiding affects how others can truly know you. This quote shows how your veils prevent others from seeing your authentic self.",
-                "impact": "This pattern makes it difficult to form deep, intimate connections."
-            },
-            "thorn": {
-                "pattern": "keeping others at a safe distance",
-                "insight": "Your defensive barriers affect how others can get close to you. This quote reveals how your protective spikes create safe but potentially lonely relationships.",
-                "impact": "This pattern protects you but also isolates you from intimacy."
-            }
-        },
-        "break_pattern_strategy": {
-            "pulse": {
-                "pattern": "finding stability in uncertainty",
-                "insight": "You need to learn how to find solid ground without needing absolute certainty. This quote shows the challenge of accepting uncertainty while still making confident decisions.",
-                "impact": "This strategy requires developing trust in your own judgment despite the unknown."
-            },
-            "spiral": {
-                "pattern": "breaking free from recursive thinking",
-                "insight": "You need to learn how to interrupt your thought loops and take action. This quote reveals the challenge of moving from analysis to implementation.",
-                "impact": "This strategy requires developing the ability to act without complete understanding."
-            },
-            "mirror": {
-                "pattern": "seeing yourself clearly without distortion",
-                "insight": "You need to learn how to see yourself accurately without the lens of self-criticism. This quote shows the challenge of developing compassionate self-perception.",
-                "impact": "This strategy requires developing self-acceptance alongside self-awareness."
-            },
-            "echo": {
-                "pattern": "stopping negative amplification",
-                "insight": "You need to learn how to process emotions without amplifying them. This quote reveals the challenge of feeling deeply without getting overwhelmed.",
-                "impact": "This strategy requires developing emotional regulation alongside emotional depth."
-            },
-            "fracture": {
-                "pattern": "healing from sudden emotional breaks",
-                "insight": "You need to learn how to rebuild trust in your emotional stability. This quote shows the challenge of developing resilience after unexpected collapses.",
-                "impact": "This strategy requires developing emotional strength alongside vulnerability."
-            },
-            "flood": {
-                "pattern": "managing overwhelming feelings",
-                "insight": "You need to learn how to stay afloat in intense emotional waters. This quote reveals the challenge of processing deep feelings without drowning.",
-                "impact": "This strategy requires developing emotional capacity alongside emotional depth."
-            },
-            "veil": {
-                "pattern": "revealing your true self safely",
-                "insight": "You need to learn how to lower your protective barriers without losing your sense of safety. This quote shows the challenge of authentic vulnerability.",
-                "impact": "This strategy requires developing trust alongside self-protection."
-            },
-            "thorn": {
-                "pattern": "lowering defenses without losing protection",
-                "insight": "You need to learn how to soften your protective spikes without becoming vulnerable to harm. This quote reveals the challenge of intimacy without losing your strength.",
-                "impact": "This strategy requires developing openness alongside healthy boundaries."
-            }
         }
     }
     
@@ -580,9 +323,7 @@ def generate_rich_interpretation(quote, section, collapse_type):
     # Generate rich, dynamic interpretation
     interpretation = f"You said, '{quote}.' {insight} {impact}"
     
-    return interpretation
-
-
+    return interpretation 
 
 def fix_summary_fields(data):
     for phase in ["trigger", "oscillation", "interference"]:
@@ -793,7 +534,7 @@ def validate_complete_json_flexible(data, user_id):
         "valid": True,
         "missing_fields": missing_optional,
         "message": "Validation passed with optional field issues"
-    }
+    } 
 
 @app.route("/analyze", methods=["POST", "OPTIONS"])
 def analyze():
@@ -905,7 +646,7 @@ User input: {input_text}
 
     except Exception as e:
         print(f"❌ Analysis error: {str(e)}")
-        return jsonify({"error": "Analysis failed. Please try again."}), 500
+        return jsonify({"error": "Analysis failed. Please try again."}), 500 
 
 @app.route("/lock", methods=["POST", "OPTIONS"])
 def lock():
@@ -1117,6 +858,7 @@ Rules:
 
             print(f"✅ Successfully updated user {user_id} with fallback content")
             return jsonify({"user_id": user_id, "data": collapse_data, "cached": False})
+        
         print(f"📄 Raw GPT response length: {len(result)} characters")
         print(f"📄 Raw response preview: {result[:200]}...")
         
@@ -1343,7 +1085,7 @@ Rules:
         return jsonify({
             "error": error_message,
             "details": str(e)
-        }), 500
+        }), 500 
 
 @app.route("/submit", methods=["POST", "OPTIONS"])
 def submit():
@@ -1643,8 +1385,6 @@ def check_env():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-
 @app.route("/paywall/<user_id>", methods=["GET"])
 def check_paywall(user_id):
     try:
@@ -1726,7 +1466,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ Server startup error: {e}")
         import traceback
-        traceback.print_exc()
-#   B a c k e n d   d e p l o y m e n t   t r i g g e r   -   0 7 / 3 0 / 2 0 2 5   1 3 : 5 6 : 0 6 
- 
- 
+        traceback.print_exc() 
